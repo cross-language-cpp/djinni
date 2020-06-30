@@ -9,9 +9,11 @@ Objective-C on Android and iOS.  We announced Djinni at CppCon 2014. You can see
 [slides](https://bit.ly/djinnitalk) and [video](https://bit.ly/djinnivideo).  For more info about
 Djinni and how others are using it, check out the community links at the end of this document.
 
-__Maintenance note:__ This repo is stable but no longer maintained by Dropbox.  If you have
-questions or want to talk to other users of Djinni, you can join the Slack community via the
-link at the end of this document.
+## Djinni ❤️ Community
+
+Dropbox ended maintenance of [Djinni](https://github.com/dropbox/djinni) in March 2020. This fork wants to give Djinni a second life by transforming it to a community-driven project.
+
+We are currently in the early stage of migration to the all new [cross-language-cpp](https://github.com/cross-language-cpp) organization. Everybody interested in helping us to form this new place is more than welcome!
 
 ## Main Features
 - Generates parallel C++, Java and Objective-C type definitions from a single interface
@@ -540,5 +542,4 @@ In order to do that, there are two steps needed:
 - Andrew Twyman
 
 ## Contacts
-- Andrew Twyman - `artwymana+djinni@gmail.com`
-- Jacob Potter - `djinni@j4cbo.com`
+- Johannes Krafft - `djinni@jothe.pro`
