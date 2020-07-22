@@ -1,0 +1,46 @@
+name: CI
+on:
+  push:
+    branches:
+    - '*'
+  pull_request:
+    branches:
+    - master
+
+jobs:
+  test-objc:
+    runs-on: macos-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Caching scala & required dependencies
+      uses: actions/cache@v2
+      with:
+        path: |
+          ~/.sbt
+          ~/.ivy2
+        key: ${{ runner.os }}-scala
+    - name: Building djinni
+      run: make djinni
+    - name: Running objC test
+      working-directory: test-suite
+      run: make objc
+  test-java:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Caching scala & required dependencies
+      uses: actions/cache@v2
+      with:
+        path: |
+          ~/.sbt
+          ~/.ivy2
+        key: ${{ runner.os }}-scala
+    - name: Building djinni
+      run: make djinni
+    - name: Running java test
+      working-directory: test-suite
+      run: make java
+    - name: Running dockerized java-tests
+      if: false # disabled because of https://github.com/cross-language-cpp/djinni/issues/12
+      working-directory: test-suite
+      run: make linux_docker
