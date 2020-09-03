@@ -39,6 +39,20 @@ set_target_properties(djinni_support_lib PROPERTIES
   CXX_EXTENSIONS false
 )
 
+
+install(
+  TARGETS djinni_support_lib
+  LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+  ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+)
+
+install(
+  FILES ${SRC_SHARED}
+  DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+)
+
+
+
 # Objective-C support
 option(DJINNI_WITH_OBJC "Include the Objective-C support code in Djinni support library." off)
 if(DJINNI_WITH_OBJC)
@@ -46,6 +60,23 @@ if(DJINNI_WITH_OBJC)
   target_sources(djinni_support_lib PRIVATE ${SRC_OBJC})
   source_group("objc" FILES ${SRC_OBJC})
   target_compile_options(djinni_support_lib PUBLIC "-fobjc-arc")
+
+  install(
+    FILES
+      "support-lib/objc/DJICppWrapperCache+Private.h"
+      "support-lib/objc/DJIError.h"
+      "support-lib/objc/DJIMarshal+Private.h"
+      "support-lib/objc/DJIObjcWrapperCache+Private.h"
+    DESTINATION
+      ${CMAKE_INSTALL_INCLUDEDIR}/objc
+  )
+
+  if (NOT DJINNI_STATIC_LIB)
+    target_link_libraries(djinni_support_lib
+      "-framework Foundation"
+    )
+  endif()
+
 endif()
 
 # JNI support
@@ -57,6 +88,15 @@ if(DJINNI_WITH_JNI)
   target_include_directories(djinni_support_lib PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/support-lib/jni/>")
   target_sources(djinni_support_lib PRIVATE ${SRC_JNI})
   source_group("jni" FILES ${SRC_JNI})
+
+  install(
+    FILES
+    "support-lib/jni/djinni_support.hpp"
+    "support-lib/jni/Marshal.hpp"
+    DESTINATION
+    ${CMAKE_INSTALL_INCLUDEDIR}/jni
+    )
+
   # Do not use the host's jni.h on Android as it is provided automatically by the NDK
   if(NOT ANDROID)
     find_package(JNI REQUIRED QUIET)
