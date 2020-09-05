@@ -1,20 +1,22 @@
-import com.typesafe.sbt.SbtStartScript
+import sbtassembly.AssemblyPlugin.defaultUniversalScript
 
-scalaVersion := "2.11.12"
+ThisBuild / scalaVersion := "2.12.12"
+ThisBuild / organization := "com.github.cross-language-cpp"
 
-libraryDependencies ++= Seq(
-	"org.scala-lang.modules" %% "scala-parser-combinators" % "1.0.1",
-	"org.yaml" % "snakeyaml" % "1.15"
-)
+lazy val djinni = (project in file("."))
+  .settings(
+    name := "djinni",
+    version := "0.1.0",
+    libraryDependencies += "org.scala-lang.modules" %% "scala-parser-combinators" % "1.1.2",
+    libraryDependencies += "org.yaml" % "snakeyaml" % "1.26",
+    libraryDependencies += "com.github.scopt" %% "scopt" % "3.7.1",
+    assemblyOutputPath in assembly := { file("target/bin") / (assemblyJarName in assembly).value },
+    assemblyJarName in assembly := s"${name.value}",
+    assemblyOption in assembly := (assemblyOption in assembly).value.copy(prependShellScript = Some(defaultUniversalScript(shebang = false))),
+    test in assembly := {}
+  )
 
-scalaSource in Compile := baseDirectory.value / "source"
 
-sourcesInBase := false
 
-// 143 chars is the filename length limit in eCryptfs, commonly used in linux distros to encrypt homedirs.
-// Make scala respect that limit via max-classfile-name, or compilation fails.
-scalacOptions ++= Seq("-unchecked", "-deprecation", "-feature", "-Xmax-classfile-name", "143")
 
-libraryDependencies += "com.github.scopt" %% "scopt" % "3.2.0"
 
-Seq(SbtStartScript.startScriptForClassesSettings: _*)

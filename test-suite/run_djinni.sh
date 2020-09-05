@@ -57,13 +57,10 @@ elif [ $# -eq 1 ]; then
     exit
 fi
 
-# Build Djinni
-"$base_dir/../src/build"
-
 # Run Djinni generation
 [ ! -e "$temp_out" ] || rm -r "$temp_out"
 (cd "$base_dir" && \
-"$base_dir/../src/run-assume-built" \
+"$base_dir/../src/target/bin/djinni" \
     --java-out "$temp_out_relative/java" \
     --java-package $java_package \
     --java-generate-interfaces true \
@@ -94,7 +91,7 @@ fi
     --yaml-prefix "test_" \
     \
     --idl "$wchar_in_relative" && \
-"$base_dir/../src/run-assume-built" \
+"$base_dir/../src/target/bin/djinni" \
     --java-out "$temp_out_relative/java" \
     --java-package $java_package \
     --java-generate-interfaces true \
@@ -133,7 +130,7 @@ fi
 # Make sure we can parse back our own generated YAML file
 cp "$base_dir/djinni/yaml-test.djinni" "$temp_out/yaml"
 (cd "$base_dir" && \
-"$base_dir/../src/run-assume-built" \
+"$base_dir/../src/target/bin/djinni" \
     --java-out "$temp_out_relative/java" \
     --java-package $java_package \
     --java-generate-interfaces true \

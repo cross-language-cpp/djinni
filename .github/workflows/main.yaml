@@ -8,35 +8,48 @@ on:
     - master
 
 jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Caching scala & required dependencies
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.sbt
+            ~/.ivy2
+          key: ${{ runner.os }}-scala
+      - name: Building djinni
+        run: make djinni_standalone
+      - uses: actions/upload-artifact@v2
+        with:
+          name: djinni-standalone
+          path: src/target/bin/djinni
   test-objc:
     runs-on: macos-latest
+    needs: build
     steps:
     - uses: actions/checkout@v2
-    - name: Caching scala & required dependencies
-      uses: actions/cache@v2
+    - uses: actions/download-artifact@v2
       with:
-        path: |
-          ~/.sbt
-          ~/.ivy2
-        key: ${{ runner.os }}-scala
-    - name: Building djinni
-      run: make djinni
+        name: djinni-standalone
+        path: src/target/bin
+    - name: Restore file permissions
+      run: chmod u+x src/target/bin/djinni 
     - name: Running objC test
       working-directory: test-suite
       run: make objc
   test-java:
     runs-on: ubuntu-latest
+    needs: build
     steps:
     - uses: actions/checkout@v2
-    - name: Caching scala & required dependencies
-      uses: actions/cache@v2
+    - uses: actions/download-artifact@v2
       with:
-        path: |
-          ~/.sbt
-          ~/.ivy2
-        key: ${{ runner.os }}-scala
-    - name: Building djinni
-      run: make djinni
+        name: djinni-standalone
+        path: src/target/bin
+    - name: Restore file permissions
+      run: chmod u+x src/target/bin/djinni
     - name: Running java test
       working-directory: test-suite
       run: make java

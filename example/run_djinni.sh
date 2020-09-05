@@ -46,11 +46,8 @@ elif [ $# -eq 1 ]; then
     exit
 fi
 
-# Build djinni
-"$base_dir/../src/build"
-
 [ ! -e "$temp_out" ] || rm -r "$temp_out"
-"$base_dir/../src/run-assume-built" \
+"$base_dir/../src/target/bin/djinni" \
     --java-out "$temp_out/java" \
     --java-package $java_package \
     --java-class-access-modifier "package" \

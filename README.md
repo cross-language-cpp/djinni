@@ -26,6 +26,16 @@ We are currently in the early stage of migration to the all new [cross-language-
 
 ## Getting Started
 
+### Installation
+
+Run `make djinni_standalone` to build a self-executing jar (`src/target/bin/djinni`).
+Put it on the `PATH` to install djinni. On Windows the file must be renamed to `djinni.bat` to make it executable.
+
+For more details on how to build & run djinni, consult the [build instructions](src/README.md).
+
+*Note*: The `all` target of the main `Makefile` includes the `djinni_standalone` target.
+
+
 ### Types
 Djinni generates code based on interface definitions in an IDL file. An IDL file can contain
 three kinds of declarations: enums, records, and interfaces.
@@ -107,7 +117,7 @@ will only be processed once.
 ### Generate Code
 When the Djinni file(s) are ready, from the command line or a bash script you can run:
 
-    src/run \
+    djinni \
        --java-out JAVA_OUTPUT_FOLDER \
        --java-package com.example.jnigenpackage \
        --java-cpp-exception DbxException \ # Choose between a customized C++ exception in Java and java.lang.RuntimeException (the default).
@@ -127,7 +137,7 @@ When the Djinni file(s) are ready, from the command line or a bash script you ca
        --idl MY_PROJECT.djinni
 
 Some other options are also available, such as `--cpp-namespace` that put generated C++ code into the namespace specified. For a list of all options, run
-`src/run --help`
+`djinni --help`
 
 Sample generated code is in the `example/generated-src/` and `test-suite/generated-src/`
 directories of this distribution.
@@ -458,48 +468,6 @@ integers are not included because they are not available in Java.
 ## Test Suite
 Run `make test` to invoke the test suite, found in the test-suite subdirectory. It will build and run Java code on a local JVMy, plus Objective-C on an iOS simulator.  The latter will only work on a Mac with Xcode.
 
-## Generate a standalone jar
-
-The `djinni_jar` target of the main `Makefile` creates a standalone `.jar`. 
-This uses the [sbt assembly plugin](https://github.com/sbt/sbt-assembly) under the hoods.
-
-Simply call this target from the root directory:
-```shell
-make djinni_jar
-```
-This will produce a `.jar` file inside the `src/target/scala_<SCALA_VERSION>/djinni-assembly-<VERSION>.jar`.
-
-You can move and use it as any other executable `.jar`.
-
-Assuming the `.jar` is located at `$DJINNI_JAR_DIR` its version equals `0.1-SNAPSHOT`:
-```shell
-# Example
-java -jar $DJINNI_JAR_DIR/djinni-assembly-0.1-SNAPSHOT.jar \
-    --java-out "$temp_out/java" \
-    --java-package $java_package \
-    --java-class-access-modifier "package" \
-    --java-nullable-annotation "javax.annotation.CheckForNull" \
-    --java-nonnull-annotation "javax.annotation.Nonnull" \
-    --ident-java-field mFooBar \
-    \
-    --cpp-out "$temp_out/cpp" \
-    --cpp-namespace textsort \
-    --ident-cpp-enum-type foo_bar \
-    \
-    --jni-out "$temp_out/jni" \
-    --ident-jni-class NativeFooBar \
-    --ident-jni-file NativeFooBar \
-    \
-    --objc-out "$temp_out/objc" \
-    --objcpp-out "$temp_out/objc" \
-    --objc-type-prefix TXS \
-    --objc-swift-bridging-header "TextSort-Bridging-Header" \
-    \
-    --idl "$in"
-```
-
-*Note*: The `all` target of the main `Makefile` includes the `djinni_jar` target.
-
 ## Generate an iOS universal binary of the support library.
 
 The `ios-build-support-lib.sh` helps you to build an universal static library for iOS platforms.
@@ -540,6 +508,7 @@ In order to do that, there are two steps needed:
 - Jacob Potter
 - Iulia Tamas
 - Andrew Twyman
+- Johannes Krafft
 
 ## Contacts
 - Johannes Krafft - `djinni@jothe.pro`

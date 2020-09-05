@@ -6,9 +6,7 @@ ifndef ANDROID_NDK_HOME
 ANDROID_NDK_HOME = $(abspath $(dir $(realpath $(shell which ndk-build))))
 endif
 
-SCALA_VERSION=2.11
-DJINNI_VERSION=0.1-SNAPSHOT
-OUTPUT_JAR=src/target/scala-$(SCALA_VERSION)/djinni-assembly-$(DJINNI_VERSION).jar
+OUTPUT_EXECUTABLE=src/target/bin/djinni
 
 #
 # Global targets.
@@ -32,14 +30,14 @@ clean: djinni_jar_clean test_clean
 	cd deps/gyp && git checkout -q 0bb67471bca068996e15b56738fa4824dfa19de0
 
 djinni:
-	cd src && ./build
+	cd src && sbt compile
 
-$(OUTPUT_JAR):
+$(OUTPUT_EXECUTABLE):
 	cd src && sbt assembly
 
-djinni_jar: $(OUTPUT_JAR)
+djinni_standalone: $(OUTPUT_EXECUTABLE)
 
-djinni_jar_clean:
+djinni_standalone_clean:
 	cd src && sbt clean
 
 # we specify a root target for android to prevent all of the targets from spidering out
